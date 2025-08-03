@@ -149,6 +149,23 @@
             transform: scale(1.05);
         }
 
+        #next-message-btn {
+            background: var(--control-bg);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: transform 0.2s, background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        #next-message-btn:hover {
+            transform: scale(1.05);
+        }
+
         /* Styles for the new controls container */
         .global-controls {
             position: fixed;
@@ -338,7 +355,20 @@
             <button id="open-card-btn">Open Card</button>
         </div>
 
-        <!-- Friendship Card page (initially hidden) -->
+        <!-- Short Message Page (new) -->
+        <div id="short-message-page" class="page is-hidden">
+            <div class="emoji">✨</div>
+            <h1>A little something just for you!</h1>
+            <p>
+                To the one who always makes me smile, <br>
+                here's a small thank you for being you.
+            </p>
+            <button id="next-message-btn">
+                Next
+            </button>
+        </div>
+
+        <!-- Friendship Card page (final) -->
         <div id="card-page" class="page is-hidden">
             <div class="card">
                 <div class="emoji">🐼💖</div>
@@ -377,8 +407,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const homePage = document.getElementById('home-page');
+            const shortMessagePage = document.getElementById('short-message-page');
             const cardPage = document.getElementById('card-page');
             const openCardBtn = document.getElementById('open-card-btn');
+            const nextMessageBtn = document.getElementById('next-message-btn');
             const musicBtn = document.getElementById('music-btn');
             const musicIcon = document.getElementById('music-icon');
             const themeToggle = document.getElementById('theme-toggle');
@@ -391,6 +423,7 @@
             // Initialize music state
             let isPlaying = false;
             let firstInteraction = true;
+            let sparkleInterval;
 
             // Effect functions
             function createSparkle() {
@@ -413,7 +446,7 @@
                 setTimeout(() => heart.remove(), 2000);
             }
 
-            // Logic to switch from home page to card page with a transition
+            // Logic to switch from home page to the short message page
             openCardBtn.addEventListener('click', () => {
                 // Hide the home page
                 homePage.classList.remove('is-visible');
@@ -430,17 +463,30 @@
                     firstInteraction = false;
                 }
 
-                // After the fade-out duration, show the card page
+                // After the fade-out duration, show the short message page
                 setTimeout(() => {
-                    cardPage.classList.remove('is-hidden');
-                    cardPage.classList.add('is-visible');
+                    shortMessagePage.classList.remove('is-hidden');
+                    shortMessagePage.classList.add('is-visible');
                     
                     // Start a continuous sparkle effect once the card is open
-                    setInterval(createSparkle, 100);
+                    sparkleInterval = setInterval(createSparkle, 100);
                 }, 700); // This delay should match the CSS transition duration
             });
+
+            // Logic to switch from the short message page to the final card page
+            nextMessageBtn.addEventListener('click', () => {
+                 // Hide the short message page
+                 shortMessagePage.classList.remove('is-visible');
+                 shortMessagePage.classList.add('is-hidden');
+
+                 // After the fade-out duration, show the final card page
+                 setTimeout(() => {
+                    cardPage.classList.remove('is-hidden');
+                    cardPage.classList.add('is-visible');
+                 }, 700);
+            });
             
-            // Add click-based heart effect to the card
+            // Add click-based heart effect to the final card page
             cardPage.addEventListener('click', (e) => {
                 // Get the click position relative to the card page
                 const rect = cardPage.getBoundingClientRect();
@@ -493,5 +539,6 @@
     </script>
 </body>
 </html>
+
 
 
