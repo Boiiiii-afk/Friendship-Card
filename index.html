@@ -178,7 +178,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px var(--shadow-color);
+            box-shadow: 0 4-px 8px var(--shadow-color);
             transition: transform 0.2s, background-color 0.3s ease;
         }
 
@@ -282,7 +282,7 @@
                 opacity: 0;
                 transform: translateY(-100px) scale(1.5);
             }
-            }
+        }
 
         @media (max-width: 500px) {
             .container {
@@ -369,8 +369,11 @@
     <!-- Container for background effects -->
     <div class="sparkle-container"></div>
 
-    <!-- Tone.js library for generating music -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <audio id="card-music" loop>
+        <source src="Friendship Day #status #viral #shorts.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const homePage = document.getElementById('home-page');
@@ -383,13 +386,10 @@
             const lightIcon = document.getElementById('light-icon');
             const darkIcon = document.getElementById('dark-icon');
             const sparkleContainer = document.querySelector('.sparkle-container');
+            const cardMusic = document.getElementById('card-music');
 
-            // Initialize Tone.js components
+            // Initialize music state
             let isPlaying = false;
-            const synth = new Tone.Synth().toDestination();
-            const melody = new Tone.Sequence((time, note) => {
-                synth.triggerAttackRelease(note, '8n', time);
-            }, ['C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4', 'E4'], '4n');
 
             // Effect functions
             function createSparkle() {
@@ -405,7 +405,7 @@
             function createHeart(x, y) {
                 const heart = document.createElement('div');
                 heart.classList.add('heart');
-                heart.innerHTML = '💖';
+                heart.innerHTML = '�';
                 heart.style.left = `${x}px`;
                 heart.style.top = `${y}px`;
                 cardPage.appendChild(heart);
@@ -425,6 +425,7 @@
                     
                     // Start a continuous sparkle effect once the card is open
                     setInterval(createSparkle, 100);
+                    
                 }, 700); // This delay should match the CSS transition duration
             });
             
@@ -439,18 +440,24 @@
 
             // Music functionality
             musicBtn.addEventListener('click', async () => {
-                // Tone.js requires a user gesture to start
-                await Tone.start();
                 if (isPlaying) {
-                    Tone.Transport.stop();
-                    melody.stop();
+                    cardMusic.pause();
+                    isPlaying = false;
                     musicIcon.textContent = '▶';
                 } else {
-                    Tone.Transport.start();
-                    melody.start(0);
-                    musicIcon.textContent = '⏸';
+                    // This try-catch block handles the AbortError reliably
+                    try {
+                        await cardMusic.play();
+                        isPlaying = true;
+                        musicIcon.textContent = '⏸';
+                    } catch (error) {
+                        console.log('Playback was interrupted, likely due to a quick toggle or browser policy.');
+                        // In case of an AbortError, the music is already paused, so no action is needed.
+                        // We just ensure the state variables are correct.
+                        isPlaying = false;
+                        musicIcon.textContent = '▶';
+                    }
                 }
-                isPlaying = !isPlaying;
             });
 
             // Theme toggle functionality
@@ -475,3 +482,4 @@
     </script>
 </body>
 </html>
+�
